@@ -16,7 +16,7 @@ export default function TabLayout() {
       screenOptions={{
         tabBarStyle: {
           backgroundColor: '#A81012', // Couleur de fond sombre élégante
-          height: 85, // Hauteur du bottom navigation
+          height: 80, // Hauteur du bottom navigation
           borderTopWidth: 0, // Pas de bordure
           borderRadius: 15, // Coins arrondis
           marginHorizontal: 10, // Marges sur les côtés pour l'espacement
@@ -63,7 +63,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="Category"
         options={{
-          title: 'Categorie',
+          // title: 'Categorie',
           tabBarIcon: ({ color, size }) => <AntDesign name="menufold" size={size} color={color} />,
         }}
       />
