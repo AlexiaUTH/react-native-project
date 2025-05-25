@@ -1,48 +1,26 @@
-// import { StyleSheet } from 'react-native';
-// import { View } from '@/components/Themed';
-
-// export default function Categorie() {
-//   return (
-//     <View style={styles.container}>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   title: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//   },
-//   separator: {
-//     marginVertical: 30,
-//     height: 1,
-//     width: '80%',
-//   },
-// });
-
 import React from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, Image, Dimensions } from 'react-native';
+
+const screenWidth = Dimensions.get('window').width;
 
 const categories = [
-  { id: '1', name: 'Électronique' },
-  { id: '2', name: 'Mode' },
-  { id: '3', name: 'Maison' },
-  { id: '4', name: 'Sports' },
-  { id: '5', name: 'Livres' },
+  { id: '1', name: 'Électronique', image: require('../../assets/images/adaptive-icon.png') },
+  { id: '2', name: 'Mode', image: require('../../assets/images/adaptive-icon.png') },
+  { id: '3', name: 'Maison', image: require('../../assets/images/adaptive-icon.png') },
+  { id: '4', name: 'Sports', image: require('../../assets/images/adaptive-icon.png') },
+  { id: '5', name: 'Livres', image: require('../../assets/images/adaptive-icon.png') },
 ];
 
 const CategoryListScreen = ({ navigation }: { navigation: any }) => {
-  const renderItem = ({ item }: { item: { id: string; name: string } }) => (
+  const renderItem = ({ item }: { item: { id: string; name: string; image: any } }) => (
     <TouchableOpacity
       style={styles.categoryItem}
       onPress={() => navigation.navigate('CategoryDetail', { categoryId: item.id, categoryName: item.name })}
     >
-      <Text style={styles.categoryText}>{item.name}</Text>
+      <Image source={item.image} style={styles.categoryImage} />
+      <View style={styles.textContainer}>
+        <Text style={styles.categoryText}>{item.name}</Text>
+      </View>
     </TouchableOpacity>
   );
 
@@ -60,24 +38,32 @@ const CategoryListScreen = ({ navigation }: { navigation: any }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
-    backgroundColor: '#f8f8f8',
+    padding: 20,
+    backgroundColor: "#000000",
   },
   categoryItem: {
-    padding: 15,
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    marginVertical: 5,
-    shadowColor: '#000',
-    shadowOpacity: 0.1,
-    shadowOffset: { width: 0, height: 2 },
-    shadowRadius: 5,
-    elevation: 3,
+    width: screenWidth,
+    height: 150,
+    marginBottom: 10,
+  },
+  categoryImage: {
+    // border: 1px solid black,
+    borderRadius: 25,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  textContainer: {
+    position: 'absolute',
+    bottom: 0,
+    width: '100%',
+    padding: 10,
   },
   categoryText: {
-    fontSize: 16,
+    fontSize: 20,
     fontWeight: 'bold',
-    color: '#333',
+    color: '#fff',
+    textAlign: 'center',
   },
 });
 
