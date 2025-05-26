@@ -8,6 +8,9 @@ import 'react-native-reanimated';
 
 import { useColorScheme } from '@/components/useColorScheme';
 
+import { CartProvider } from '../context/CartContext'; // Chemin à adapter selon ton projet
+
+
 export {
   // Catch any errors thrown by the Layout component.
   ErrorBoundary,
@@ -42,7 +45,9 @@ export default function RootLayout() {
     return null;
   }
 
-  return <RootLayoutNav />;
+  return <CartProvider>
+    <RootLayoutNav />
+  </CartProvider>;
 }
 
 function RootLayoutNav() {

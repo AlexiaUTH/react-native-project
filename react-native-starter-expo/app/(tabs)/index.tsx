@@ -1,32 +1,5 @@
-// import { StyleSheet } from 'react-native';
-// import { Text, View } from '@/components/Themed';
-
-// export default function TabOneScreen() {
-//   return (
-//     <View style={styles.container}>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   title: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//   },
-//   separator: {
-//     marginVertical: 30,
-//     height: 1,
-//     width: '80%',
-//   },
-// });
-
 import React from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, StyleSheet } from 'react-native';
 import { useRouter } from 'expo-router';
 import ProductCard from '../../components/ProductCard';
 
@@ -44,6 +17,12 @@ const products = [
     price: 79.99,
     image: 'https://picsum.photos/200',
   },
+  {
+    id: '3',
+    name: 'Produit 3',
+    price: 95.49,
+    image: 'https://picsum.photos/400',
+  },
 ];
 
 export default function Home() {
@@ -54,10 +33,8 @@ export default function Home() {
   };
 
   return (
-    <View style={{ flex: 1, padding: 16 }}>
-      <Text style={{ fontSize: 24, fontWeight: 'bold', marginBottom: 16 }}>
-        Bienvenue sur la boutique
-      </Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Bienvenue sur la boutique</Text>
 
       <FlatList
         data={products}
@@ -66,7 +43,25 @@ export default function Home() {
         renderItem={({ item }) => (
           <ProductCard product={item} onPress={() => handlePressProduct(item.id)} />
         )}
+        contentContainerStyle={styles.listContent}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    padding: 16,
+    backgroundColor: '#000000',
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 16,
+    color: '#fff',
+  },
+  listContent: {
+    paddingHorizontal: 0,
+  },
+});

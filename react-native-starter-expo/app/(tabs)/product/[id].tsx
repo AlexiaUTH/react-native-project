@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, Button, Alert } from 'react-native';
 import { useRouter, useLocalSearchParams } from 'expo-router';
+import { useCart } from '../../../context/CartContext';
 
 // Exemple de données statiques (à remplacer par fetch ou contexte plus tard)
 const products = [
@@ -18,10 +19,17 @@ const products = [
     description: "Description du produit 2, encore mieux !",
     image: 'https://picsum.photos/200',
   },
+  {
+    id: '3',
+    name: 'Produit 3',
+    price: 95.49,
+    image: 'https://picsum.photos/400',
+  },
 ];
 
 export default function ProductDetail() {
-    const { id } = useLocalSearchParams<{ id: string }>();
+  const { id } = useLocalSearchParams<{ id: string }>();
+  const { addToCart } = useCart();
   const router = useRouter();
 
   const product = products.find((p) => p.id === id);
@@ -35,8 +43,8 @@ export default function ProductDetail() {
   }
 
   const handleAddToCart = () => {
+    addToCart(product);
     Alert.alert('Panier', `${product.name} ajouté au panier !`);
-    // Ici tu peux appeler ta logique d'ajout au panier
   };
 
   return (

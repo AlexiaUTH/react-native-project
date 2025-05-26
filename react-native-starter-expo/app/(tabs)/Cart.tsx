@@ -1,148 +1,90 @@
-// import { StyleSheet } from 'react-native';
-// import { Text, View } from '@/components/Themed';
-
-// export default function Cart() {
-//   return (
-//     <View style={styles.container}>
-//     </View>
-//   );
-// }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//   },
-//   title: {
-//     fontSize: 20,
-//     fontWeight: 'bold',
-//   },
-//   separator: {
-//     marginVertical: 30,
-//     height: 1,
-//     width: '80%',
-//   },
-// });
-
-
-
-import React, { useState } from "react";
-import { View, Text, Button, Alert, FlatList, StyleSheet, Image } from "react-native";
-
+import React from 'react';
+import { View, Text, FlatList, Image, Button, Alert, StyleSheet } from 'react-native';
+import { useCart } from '../../context/CartContext'; // Suppose qu'on utilise le contexte CartContext
 import MaterialIcons from '@expo/vector-icons/MaterialIcons';
 
-const TaskManager = () => {
+export default function CartScreen() {
+  const { cartItems, removeFromCart, updateQuantity } = useCart();
 
-  const [tasks, setTasks] = useState([
-    { id: "1", title: "Acheter du lait", image: "https://picsum.photos/50", price: 2.5, quantity: 1 },
-    { id: "2", title: "Faire du sport", image: "https://picsum.photos/50", price: 0, quantity: 1 },
-    { id: "3", title: "Lire un livre", image: "https://picsum.photos/50", price: 10, quantity: 1 },
-  ]);
-
-  const increaseQuantity = (taskId: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId ? { ...task, quantity: task.quantity + 1 } : task
-      )
-    );
-  };
-
-  const decreaseQuantity = (taskId: string) => {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task.id === taskId && task.quantity > 1
-          ? { ...task, quantity: task.quantity - 1 }
-          : task
-      )
-    );
-  }  
-
-  const handleDeleteTask = (taskId: string) => {
-    setTasks((prevTasks) => prevTasks.filter((task) => task.id !== taskId));
-    console.log(`Tâche ${taskId} supprimée`);
-  };
-
-  const handleEditTask = (taskId: string) => {
-    console.log(`Tâche ${taskId} modifiée`);
-    // Ici, tu pourrais naviguer vers un écran pour modifier la tâche.
-  };
-
-  const showTaskOptions = (taskId: string, taskTitle: string) => {
+  const showRemoveAlert = (id: string, name: string) => {
     Alert.alert(
-      "",
-        `Êtes-vous sûr de vouloir supprimer "${taskTitle}" ?`,
+      "Supprimer l'article",
+      `Voulez-vous supprimer "${name}" du panier ?`,
       [
         {
-          text: "Supprimer",
-          onPress: () => handleDeleteTask(taskId),
-          style: "destructive",
+          text: "Annuler",
+          style: "cancel",
         },
         {
-          text: "Annuler",
-          onPress: () => console.log("Action annulée"),
-          style: "cancel",
+          text: "Supprimer",
+          style: "destructive",
+          onPress: () => removeFromCart(id),
         },
       ]
     );
   };
 
-  const renderTask = ({ item }: { item: { id: string; title: string; image: string; price: number; quantity: number } }) => (
-    <View style={styles.taskItem}>
-      <Image source={{ uri: item.image }} style={styles.taskImage} />
+  const renderCartItem = ({ item }: { item: any }) => (
+    <View style={styles.cartItem}>
+      <Image source={{ uri: item.image }} style={styles.cartImage} />
       <View style={{ flex: 1, marginLeft: 10 }}>
-        <Text style={styles.taskTitle}>{item.title}</Text>
-        <Text style={styles.taskPrice}>{item.price} €</Text>
+        <Text style={styles.cartTitle}>{item.name}</Text>
+        <Text style={styles.cartPrice}>{item.price} €</Text>
       </View>
       <View style={styles.quantityContainer}>
-        <Button title="-" onPress={() => decreaseQuantity(item.id)} />
+        <Button title="-" onPress={() => updateQuantity(item.id, item.quantity - 1)} />
         <Text style={styles.quantityText}>{item.quantity}</Text>
-        <Button title="+" onPress={() => increaseQuantity(item.id)} />
+        <Button title="+" onPress={() => updateQuantity(item.id, item.quantity + 1)} />
       </View>
-      <MaterialIcons name="delete" size={30} color="#A81012" onPress={() => showTaskOptions(item.id, item.title)} />
+      <MaterialIcons
+        name="delete"
+        size={24}
+        color="#A81012"
+        onPress={() => showRemoveAlert(item.id, item.name)}
+      />
     </View>
   );
 
   return (
     <View style={styles.container}>
       <FlatList
-        data={tasks}
-        renderItem={renderTask}
+        data={cartItems}
+        renderItem={renderCartItem}
         keyExtractor={(item) => item.id}
+        ListEmptyComponent={<Text style={styles.emptyText}>Votre panier est vide</Text>}
       />
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: "#000000",
+    backgroundColor: "#f8f8f8",
   },
-  taskItem: {
+  cartItem: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
-    padding: 15,
-    marginBottom: 10,
+    marginBottom: 15,
+    padding: 10,
     backgroundColor: "#ffffff",
-    borderRadius: 10,
+    borderRadius: 8,
     shadowColor: "#000",
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
+    shadowOpacity: 0.1,
     shadowRadius: 4,
   },
-  taskImage: {
+  cartImage: {
     width: 50,
     height: 50,
     borderRadius: 25,
   },
-  taskTitle: {
+  cartTitle: {
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
   },
-  taskPrice: {
+  cartPrice: {
     fontSize: 14,
     color: "#555",
   },
@@ -153,8 +95,12 @@ const styles = StyleSheet.create({
   quantityText: {
     marginHorizontal: 10,
     fontSize: 16,
-    fontWeight: "bold",
+    fontWeight: "600",
+  },
+  emptyText: {
+    textAlign: "center",
+    fontSize: 18,
+    color: "#999",
+    marginTop: 50,
   },
 });
-
-export default TaskManager;
